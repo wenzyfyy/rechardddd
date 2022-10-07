@@ -34,7 +34,7 @@ AutoPoster(process.env.topgg, client)
   ]
 
   setInterval(() => {
-      client.user.setActivity(`${activities[Math.floor(Math.random() * activities.length)]}`);
+      client.user.setActivity(`${activities1[Math.floor(Math.random() * activities.length)]}`);
   }, 15000)
     client.user.setPresence({ status: 'idle' })
   
