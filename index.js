@@ -161,4 +161,4 @@ client.distube.on("searchNoResult", (message, query) => message.reply({
   }
 }));
 
-client.login("ODgyNzMwMDc5NTk0MDg2NDQw.G1Z_mX.E2EFLXNXrMFtzcAki9H1zJkAfkZunf47BYKs-Q");
+client.login("ODgyNzMwMDc5NTk0MDg2NDQw.G8gAI4.pLEvRnGRK_mroIJ4YIN3OsuK91TV4E1EdK6bSY")
