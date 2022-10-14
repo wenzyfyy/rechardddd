@@ -161,4 +161,4 @@ client.distube.on("searchNoResult", (message, query) => message.reply({
   }
 }));
 
-client.login(process.env.token);
+client.login("ODgyNzMwMDc5NTk0MDg2NDQw.G1Z_mX.E2EFLXNXrMFtzcAki9H1zJkAfkZunf47BYKs-Q");
