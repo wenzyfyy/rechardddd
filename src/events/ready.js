@@ -15,7 +15,7 @@ module.exports = {
   
     const { AutoPoster } = require('topgg-autoposter')
 
-AutoPoster(process.env.topgg, client)
+AutoPoster("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4MjczMDA3OTU5NDA4NjQ0MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjUzNDc1NjIzfQ.nDO2npf7PLMfxRsPYHtS9BVF2TFykq0KKFMrCrK7KZo", client)
   .on('posted', () => {
     console.log('Posted stats to Top.gg!')
   })
