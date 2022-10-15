@@ -30,7 +30,7 @@ client.distube = new DisTube(client, {
   emitEventsAfterFetching: false,
   api: {
     clientId: "05e0ad4f848b4b3fb370424340a5eb6d",
-    clientSecret: "67606907b2db432c804789d5e0030f9a",
+    clientSecret: "88ba1be765944535878fc5cd892a9591",
   },
 }),
     new YtDlpPlugin(),
