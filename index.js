@@ -151,7 +151,10 @@ client.distube.on("finish", queue => {
 .on("initQueue", (queue) => {
     queue.volume = 100;
   });
-
+.on('error', (channel, error) => {
+	console.error(error);
+	channel.send(`An error encoutered: ${error.slice(0, 1979)}`); // Discord limits 2000 characters in a message
+});
 //
 
 client.distube.on("searchNoResult", (message, query) => message.reply({
