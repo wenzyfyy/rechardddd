@@ -6,21 +6,21 @@ const os = require("os");
 var GHz = "`2.30GHz`";
 module.exports = {
   slash: true,
-    name: ["istatistik"],
+  name: ["istatistik"],
   description: "Botun istatistik bilgilerini gösterir.",
   async execute(client, interaction, args) {
-      
-              const button = new MessageButton()
-.setLabel('Destek Sunucusu')
-.setStyle('LINK')
-.setURL('https://discord.gg/5nFRVX2fnR')
 
-const button1 = new MessageButton()
-.setLabel('Davet Linki')
-.setStyle('LINK')
-.setURL('https://top.gg/bot/882730079594086440')
-const row = new MessageActionRow().addComponents(button, button1);
-              
+    const button = new MessageButton()
+      .setLabel('Destek Sunucusu')
+      .setStyle('LINK')
+      .setURL('https://discord.gg/5nFRVX2fnR')
+
+    const button1 = new MessageButton()
+      .setLabel('Davet Linki')
+      .setStyle('LINK')
+      .setURL('https://top.gg/bot/882730079594086440')
+    const row = new MessageActionRow().addComponents(button, button1);
+
     const zaman = moment
       .duration(client.uptime)
       .format(" D [gün], H [saat], m [dakika], s [saniye]");
@@ -98,10 +98,10 @@ Discord.js Versiyonu: ${Discord.version}\`\`\``,
         (process.memoryUsage().heapUsed / 1024 / 512).toFixed(2) + " MB",
         true
       );
-    return interaction.reply({ 
-          embeds: [embed],
+    return interaction.reply({
+      embeds: [embed],
       components: [row],
       ephemeral: true
-        });
-            }
+    });
   }
+}

@@ -1,14 +1,14 @@
 const { MessageEmbed, Permissions } = require("discord.js");
 module.exports = {
-    name: ["gir", "katıl", "join"],
+  name: ["gir", "katıl", "join"],
   async execute(client, message, args) {
-    
+
     const { channel } = message.member.voice;
     if (!channel)
       return message.reply({
         content: "<a:hata:967431448539848754> | Bir ses kanalında değilsiniz.",
         allowedMentions: {
-        repliedUser: false
+          repliedUser: false
         }
       });
     if (
@@ -20,7 +20,7 @@ module.exports = {
       return message.reply({
         content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
         allowedMentions: {
-        repliedUser: false
+          repliedUser: false
         }
       });
     if (
@@ -30,24 +30,24 @@ module.exports = {
     )
       return message.reply({
         content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
-      allowedMentions: {
-        repliedUser: false
-      }
+        allowedMentions: {
+          repliedUser: false
+        }
       });
     const memberVoice = message.member.voice.channel;
 
-		
-			if (memberVoice) {
-				client.distube.voices.join(memberVoice)
-					.then(voice => {
-    return message.react("967432355960745985");
-          })
 
-					.catch(error => {
+    if (memberVoice) {
+      client.distube.voices.join(memberVoice)
+        .then(voice => {
+          return message.react("967432355960745985");
+        })
 
-						console.log(error);
+        .catch(error => {
 
-					})
-      }
+          console.log(error);
+
+        })
+    }
   }
 }

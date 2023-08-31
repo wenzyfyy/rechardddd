@@ -1,10 +1,10 @@
 const { MessageEmbed, Permissions } = require("discord.js");
 module.exports = {
   slash: true,
-    name: ["gir"],
+  name: ["gir"],
   description: "Botun bulunduğunuz kanala girmesine yarar.",
   async execute(client, interaction, args) {
-    
+
     const { channel } = interaction.member.voice;
     if (!channel)
       return interaction.reply({
@@ -32,21 +32,21 @@ module.exports = {
       });
     const memberVoice = interaction.member.voice.channel;
 
-		
-			if (memberVoice) {
-				client.distube.voices.join(memberVoice)
-					.then(voice => {
-    return interaction.reply({
-      content: "<a:onay:967432355960745985>",
-      ephemeral: true
-    });
-          })
 
-					.catch(error => {
+    if (memberVoice) {
+      client.distube.voices.join(memberVoice)
+        .then(voice => {
+          return interaction.reply({
+            content: "<a:onay:967432355960745985>",
+            ephemeral: true
+          });
+        })
 
-						console.log(error);
+        .catch(error => {
 
-					})
-      }
+          console.log(error);
+
+        })
+    }
   }
 }

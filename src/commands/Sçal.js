@@ -15,24 +15,24 @@ module.exports = {
     },
   ],
   async execute(client, interaction) {
-    
+
     const { channel } = interaction.member.voice;
     if (!channel) return interaction.reply({
-          content: "<a:hata:967431448539848754> | Bir ses kanalında değilsiniz.",
+      content: "<a:hata:967431448539848754> | Bir ses kanalında değilsiniz.",
       ephemeral: true
-        })
+    })
 
     if (!interaction.guild.me.permissions.has([Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK])) return interaction.reply({
-                    content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
-                     ephemeral: true
-                   })
-        if (!interaction.guild.me.permissionsIn(channel).has([Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK])) return interaction.reply({
-                    content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
-                   ephemeral: true
-                   })
-    
+      content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
+      ephemeral: true
+    })
+    if (!interaction.guild.me.permissionsIn(channel).has([Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK])) return interaction.reply({
+      content: "<a:hata:967431448539848754> | Benim yeterli izinlerim yok!                               Ses kanalı izinleri: ``Kanalı Görüntüle, Bağlan, Konuş, Ses Eylemini Kullan``",
+      ephemeral: true
+    })
+
     const müzik = interaction.options.getString("müzik")
-    
+
     const options = {
       textChannel: interaction.channel,
       member: interaction.member,
@@ -43,12 +43,12 @@ module.exports = {
       options
     );
 
-  const embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setColor("AQUA")
-  .setDescription("<a:yuklendi:967530127556771893> | İstediğiniz parça eklendi...")
-interaction.reply({ 
-  embeds: [embed],
-ephemeral: true,
-})   
+      .setDescription("<a:yuklendi:967530127556771893> | İstediğiniz parça eklendi...")
+    interaction.reply({
+      embeds: [embed],
+      ephemeral: true,
+    })
   },
 };

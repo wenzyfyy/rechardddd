@@ -11,11 +11,11 @@ module.exports = {
     require: true
   }],
   async execute(client, interaction, args) {
-    
+
     const queue = client.distube.getQueue(interaction.guild.id)
     var prefix = db.fetch(`prefix_${interaction.guild.id}`) || "r!"
 
-    
+
     if (!interaction.member.voice.channel) return interaction.reply({
       content: '<a:hata:967431448539848754> | Bir ses kanalında değilsiniz.',
       ephemeral: true,
@@ -23,11 +23,11 @@ module.exports = {
 
     if (!queue)
 
-     return interaction.reply({
+      return interaction.reply({
         content: `<a:hata:967431448539848754> | Şuan birşey çalmıyor.`,
         ephemeral: true,
-     });
-    
+      });
+
     let loopmode = interaction.options.getString("döngü")
     let mods = ["parça", "kuyruk", "kapat"];
     if (!mods.includes(loopmode)) {
@@ -36,7 +36,7 @@ module.exports = {
         ephemeral: true
       });
     }
-    
+
     if (loopmode === "kapat" || loopmode === "off") {
       await queue.setRepeatMode(0);
       return interaction.reply({
@@ -51,15 +51,15 @@ module.exports = {
       });
     } else if (loopmode === "kuyruk" || loopmode === "queue") {
       if (queue.songs.length === 1) {
-       return interaction.reply({ 
-         content: "<a:hata:967431448539848754> | Kuyrukta müzik yok.",
-         ephemeral: true
-       });
-      await queue.setRepeatMode(2);
-      return interaction.reply({
-        content: `Döngü modu: **Aktif**, olarak ayarlandı. <:loop:973627205605290024>`,
-        ephemeral: true
-      });
+        return interaction.reply({
+          content: "<a:hata:967431448539848754> | Kuyrukta müzik yok.",
+          ephemeral: true
+        });
+        await queue.setRepeatMode(2);
+        return interaction.reply({
+          content: `Döngü modu: **Aktif**, olarak ayarlandı. <:loop:973627205605290024>`,
+          ephemeral: true
+        });
       }
     }
   }

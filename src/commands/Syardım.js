@@ -5,17 +5,17 @@ const chalk = require("chalk");
 const db = require('inflames.db')
 module.exports = {
   slash: true,
-    name: ["yardım"],
+  name: ["yardım"],
   description: "Botun yardım menüsünü görmenizi sağlar.",
-   async execute(client, interaction, args) {
-     var prefix = db.fetch(`prefix_${interaction.guild.id}`) || "r!"
-     
-        console.log(chalk.magenta(`[COMMAND] Help used by ${interaction.user.tag} from ${interaction.guild.name}`));
-        const embed = new MessageEmbed()
+  async execute(client, interaction, args) {
+    var prefix = db.fetch(`prefix_${interaction.guild.id}`) || "r!"
 
-            embed.setTitle(`Lütfen Botumu Yargılamayınız <:rte:975477128135069738>`)
-            embed.setURL('https://discord.gg/5nFRVX2fnR')
-            embed.setDescription(`
+    console.log(chalk.magenta(`[COMMAND] Help used by ${interaction.user.tag} from ${interaction.guild.name}`));
+    const embed = new MessageEmbed()
+
+    embed.setTitle(`Lütfen Botumu Yargılamayınız <:rte:975477128135069738>`)
+    embed.setURL('https://discord.gg/5nFRVX2fnR')
+    embed.setDescription(`
 <a:cd:974684276748595200>\`\`${prefix}çal\`\` 》İstediğiniz müziği çalmaya yarar.
 <a:cd:974684276748595200>\`\`${prefix}ara\`\` 》İstediğiniz müziği arayarak bulmanızı sağlar.
 <a:cd:974684276748595200>\`\`${prefix}gir\`\` 》Botun bulunduğunuz kanala girmesine yarar.
@@ -34,25 +34,25 @@ module.exports = {
 
 :postbox: __Sahibime iletmek istediğiniz mesajları bana DM'den yazınız.__
     `)
-      embed.setFooter(`${interaction.user.tag}`, interaction.user.avatarURL())
-      embed.setTimestamp()
-      embed.setColor("AQUA")
+    embed.setFooter(`${interaction.user.tag}`, interaction.user.avatarURL())
+    embed.setTimestamp()
+    embed.setColor("AQUA")
 
-const button = new MessageButton()
-.setLabel('Destek Sunucusu')
-.setStyle('LINK')
-.setURL('https://discord.gg/5nFRVX2fnR')
+    const button = new MessageButton()
+      .setLabel('Destek Sunucusu')
+      .setStyle('LINK')
+      .setURL('https://discord.gg/5nFRVX2fnR')
 
-const button1 = new MessageButton()
-.setLabel('Davet Linki')
-.setStyle('LINK')
-.setURL('https://top.gg/bot/882730079594086440')
-const row = new MessageActionRow().addComponents(button, button1);
+    const button1 = new MessageButton()
+      .setLabel('Davet Linki')
+      .setStyle('LINK')
+      .setURL('https://top.gg/bot/882730079594086440')
+    const row = new MessageActionRow().addComponents(button, button1);
 
-            return interaction.reply({ 
-          embeds: [embed],
-          components: [row],
-          ephemeral: true
-        });
-            }
+    return interaction.reply({
+      embeds: [embed],
+      components: [row],
+      ephemeral: true
+    });
+  }
 }

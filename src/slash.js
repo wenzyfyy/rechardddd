@@ -2,7 +2,7 @@
 
 module.exports = {
     slash: true, //komut eğer slash ise true eğer prefixli ise false yazınız.
-	name: ['ping'],  //komut ismi
+    name: ['ping'],  //komut ismi
     description: 'Ping command.', //komut açıklaması
     option: [
         {   //1. option
@@ -18,7 +18,7 @@ module.exports = {
             require: false //burada bu optionu isteğe bağlı olara kayarladım
         }
     ],
-	async execute(client, interaction) {  //her slash commandda burası aynı olmak zorunda
-		await interaction.reply({content: "> Ping: **"+client.ws.ping+" ms**", ephemeral: true}) //komuta cevap verirken await ekleneyi unutmayın yoksa hata verir.
-	},
+    async execute(client, interaction) {  //her slash commandda burası aynı olmak zorunda
+        await interaction.reply({ content: "> Ping: **" + client.ws.ping + " ms**", ephemeral: true }) //komuta cevap verirken await ekleneyi unutmayın yoksa hata verir.
+    },
 };
