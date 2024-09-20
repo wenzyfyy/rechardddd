@@ -1,16 +1,25 @@
+// Gerekli paketleri yükleyin
+const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
 const { DisTube } = require("distube");
 const { SoundCloudPlugin } = require("@distube/soundcloud");
 const { SpotifyPlugin } = require("@distube/spotify");
-const { YtDlpPlugin } = require("@distube/yt-dlp")
-const { MessageEmbed } = require('discord.js');
-const Discord = require("discord.js");
-const discord = require("discord.js");
-const db = require("inflames.db")
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
-require("./src/base/app.js")(client)
-require("dotenv").config();
-//
+const { YtDlpPlugin } = require("@distube/yt-dlp");
+const db = require("inflames.db");
+require('dotenv').config();
 
+// Discord client ayarları
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages
+  ],
+  partials: [Partials.Channel]
+});
+
+// DisTube ayarları
 client.distube = new DisTube(client, {
   searchSongs: 0,
   searchCooldown: 0,
@@ -37,131 +46,98 @@ client.distube = new DisTube(client, {
   ],
 });
 
-//
-
+// Express.js sunucu
 const express = require('express');
-
 const app = express();
-
 const port = 3000;
 
 app.get('/', (req, res) => res.send('Power By FastUptime'));
+app.listen(port, () => console.log(`Bot şu adreste çalışıyor: http://localhost:${port}`));
 
-app.listen(port, () =>
-
-  console.log(`Bot bu adres üzerinde çalışıyor: http://localhost:${port}`)
-
-);
-
-//
-client.config = require("./src/base/settings.json");
-//Dm
+// DM mesajları kaydetme
 client.on('messageCreate', message => {
-
   if (message.author.bot) return;
 
-  const attachment = message.attachments.first()
-
+  const attachment = message.attachments.first();
   if (message.channel.type === 'DM') {
-    console.log(message.content)
+    console.log(message.content);
 
-    const dmLogEmbed = new MessageEmbed()
+    const dmLogEmbed = new EmbedBuilder()
       .setTitle(`${client.user.username} Dm`)
       .setTimestamp()
       .setColor("AQUA")
-      .setThumbnail(`${message.author.avatarURL()}`)
-      .addField("Gönderen", message.author.tag)
-      .addField("Gönderen ID", message.author.id)
-      .addField("Gönderilen Mesaj", message.content);
-
+      .setThumbnail(`${message.author.displayAvatarURL()}`)
+      .addFields(
+        { name: "Gönderen", value: message.author.tag },
+        { name: "Gönderen ID", value: message.author.id },
+        { name: "Gönderilen Mesaj", value: message.content }
+      );
 
     if (message.attachments.size !== 0) {
-      dmLogEmbed.setImage(attachment.url)
-
+      dmLogEmbed.setImage(attachment.url);
     }
 
-    client.users.fetch("564837933912293386").then((channel) => {
-
-      channel.send({ embeds: [dmLogEmbed] })
-
-    })
+    client.users.fetch("564837933912293386").then((user) => {
+      user.send({ embeds: [dmLogEmbed] });
+    });
   }
-
-});
-//Distube addSong Komutu
-
-client.distube.on("addSong", (queue, song) => {
-  const { MessageEmbed } = require("discord.js")
-  const embed = new MessageEmbed()
-    .setColor("AQUA")
-    .setDescription(`<:liste:973937322049548332> | Listeye Eklendi:
-**${song.name}**
-**Süre:** ${song.formattedDuration}`)
-    .setTimestamp()
-
-  queue.textChannel.send({
-    embeds: [embed],
-  });
 });
 
-//Distube playSong Komutu
+// DisTube olayları
+client.distube
+  .on("addSong", (queue, song) => {
+    const embed = new EmbedBuilder()
+      .setColor("AQUA")
+      .setDescription(`<:liste:973937322049548332> | Listeye Eklendi:
+      **${song.name}**
+      **Süre:** ${song.formattedDuration}`)
+      .setTimestamp();
 
-client.distube.on("playSong", (queue, song, nowTrack) => {
-  var newQueue = client.distube.getQueue(queue.id);
-  const { MessageEmbed } = require("discord.js")
-  const embed = new MessageEmbed()
+    queue.textChannel.send({ embeds: [embed] });
+  })
 
-    .addField("🎵 | Şarkı Adı", `\n**[${song.name}](${song.url})**\n`)
+  .on("playSong", (queue, song) => {
+    const newQueue = client.distube.getQueue(queue.id);
+    const embed = new EmbedBuilder()
+      .addFields(
+        { name: "🎵 | Şarkı Adı", value: `\n**[${song.name}](${song.url})**\n` },
+        { name: "<:YouTube:967436296907812874> | Şarkı Kanalı", value: `\n**[${song.uploader.name}](${song.uploader.url})**\n` },
+        { name: ":timer: | Şarkı Süresi", value: `\n**${song.formattedDuration}**\n` },
+        { name: "<:ses:973599879609868378> | Ses Seviyesi", value: `%${newQueue.volume}`, inline: true }
+      )
+      .setImage(song.thumbnail)
+      .setColor("AQUA");
 
-    .setImage(song.thumbnail)
+    setTimeout(() => {
+      queue.textChannel.send({ embeds: [embed] });
+    }, 2000);
+  })
 
-    .addField(
+  .on("finish", (queue) => {
+    const embed = new EmbedBuilder()
+      .setDescription(`
+      <a:destroyer:971145379527680040> | Tüm çalma listesi bitti. Müzik dinlemeye devam edebilirsin! <:kedyuzgun:969344668137582643>
+      [Daha fazlası için buraya tıkla!](https://top.gg/bot/882730079594086440/vote)
+      `)
+      .setColor("AQUA");
 
-      "<:YouTube:967436296907812874> | Şarkı Kanalı",
-
-      `\n**[${song.uploader.name}](${song.uploader.url})**\n`
-
-    )
-
-    .addField(":timer: | Şarkı Süresi", `\n**${song.formattedDuration}**\n`)
-
-    .addField("<:ses:973599879609868378> | Ses Seviyesi", `%${newQueue.volume}`, true)
-
-    .setColor("AQUA")
-  setTimeout(() => {
-    queue.textChannel.send({ embeds: [embed], })
-  }, 2000)
-})
-
-//Distube finish Komutu
-
-client.distube.on("finish", queue => {
-  const embed = new MessageEmbed()
-    .setDescription(`
-<a:destroyer:971145379527680040> | Tüm çalma listesi bitti, sanırım biraz daha müzik dinlemek size iyi gelebilir. <:kedyuzgun:969344668137582643>
-[Komutları sınırlandırmak yerine şuraya bir destek linki bırakıyorum](https://top.gg/bot/882730079594086440/vote)
-`)
-    .setColor('AQUA')
-
-  queue.textChannel.send({ embeds: [embed] })
-})
-
-  //
+    queue.textChannel.send({ embeds: [embed] });
+  })
 
   .on("initQueue", (queue) => {
     queue.volume = 100;
+  })
+
+  .on('error', (channel, error) => {
+    console.error(error);
+    channel.send(`Bir hata oluştu: ${error.message.slice(0, 1979)}`);
+  })
+
+  .on("searchNoResult", (message) => {
+    message.reply({
+      content: "<a:hata:967431448539848754> | Aradığın şarkıyı bulamadım!",
+      allowedMentions: { repliedUser: false },
+    });
   });
-client.distube.on('error', (channel, error) => {
-  console.error(error);
-  channel.send(`An error encoutered: ${error.slice(0, 1979)}`); // Discord limits 2000 characters in a message
-});
-//
 
-client.distube.on("searchNoResult", (message, query) => message.reply({
-  content: "<a:hata:967431448539848754> | Aradığın şarkıyı bulamadım!",
-  allowedMentions: {
-    repliedUser: false
-  }
-}));
-
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN);
