@@ -1,24 +1,26 @@
-//slash commandlar bu şekilde olmalı isteğe göre options sayısını azaltıp arttırabilirsiniz.
-
 module.exports = {
-    slash: true, //komut eğer slash ise true eğer prefixli ise false yazınız.
-    name: ['ping'],  //komut ismi
-    description: 'Ping command.', //komut açıklaması
-    option: [
-        {   //1. option
-            name: 'test',  //options ismi
-            description: 'test',  //options açıklama
-            type: 'number', //options türü
-            require: true //optionsu doldurmak zorunlu mu (true) isteğe bağlı mı (false)
+    slash: true, // Komutun slash komut olup olmadığını belirtiyor, prefixli ise false yazınız.
+    name: 'ping',  // Komutun ismi
+    description: 'Ping komutu.', // Komutun açıklaması
+    options: [
+        {   // 1. seçenek (option)
+            name: 'test',  // Seçeneğin ismi
+            description: 'Test seçeneği',  // Seçeneğin açıklaması
+            type: 'NUMBER', // Seçeneğin türü (Discord API'de büyük harf kullanılmalı)
+            required: true // Bu seçeneğin zorunlu olup olmadığını belirtir
         },
-        {   //2. option
+        {   // 2. seçenek (option)
             name: 'deneme',
-            description: 'deneme',
-            type: 'string', //options türünü yukarda numara olarak tanımlamıştık burada yazı olarak tanımladık
-            require: false //burada bu optionu isteğe bağlı olara kayarladım
+            description: 'Deneme seçeneği',
+            type: 'STRING', // Seçeneğin türü (String olarak tanımlandı)
+            required: false // Bu seçeneğin isteğe bağlı olduğunu belirtir
         }
     ],
-    async execute(client, interaction) {  //her slash commandda burası aynı olmak zorunda
-        await interaction.reply({ content: "> Ping: **" + client.ws.ping + " ms**", ephemeral: true }) //komuta cevap verirken await ekleneyi unutmayın yoksa hata verir.
+    async execute(client, interaction) {  // Slash komut çalıştırılırken kullanılacak fonksiyon
+        // Komuta verilen yanıtta "await" kullanmak önemlidir.
+        await interaction.reply({ 
+            content: `> Ping: **${client.ws.ping} ms**`, 
+            ephemeral: true // Yanıtın sadece komutu yazana gözükmesini sağlar
+        });
     },
 };
