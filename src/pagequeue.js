@@ -1,40 +1,77 @@
-const { MessageActionRow, MessageButton } = require('discord.js')
+const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = async (client, message, pages, timeout, queueLength, queueDuration) => {
-    if (!message && !message.channel) throw new Error('Channel is inaccessible.');
-    if (!pages) throw new Error('Pages are not given.');
+    if (!message || !message.channel) throw new Error('Kanal erişilebilir değil.');
+    if (!pages) throw new Error('Sayfalar belirtilmemiş.');
 
-    const row1 = new MessageButton()
+    // Daha anlamlı buton adları
+    const geriButonu = new MessageButton()
         .setCustomId('back')
         .setLabel('⬅')
-        .setStyle('SECONDARY')
-    const row2 = new MessageButton()
+        .setStyle('SECONDARY');
+
+    const ileriButonu = new MessageButton()
         .setCustomId('next')
         .setLabel('➡')
-        .setStyle('SECONDARY')
-    const row = new MessageActionRow()
-        .addComponents(row1, row2)
+        .setStyle('SECONDARY');
 
-    let page = 0;
-    const curPage = await message.channel.send({ embeds: [pages[page].setFooter({ text: `Page • ${page + 1}/${pages.length} | ${queueLength} • Songs | ${queueDuration} • Total duration` })], components: [row], allowedMentions: { repliedUser: false } });
-    if (pages.length == 0) return;
+    const butonSatırı = new MessageActionRow()
+        .addComponents(geriButonu, ileriButonu);
 
-    const filter = (interaction) => interaction.user.id === message.author.id ? true : false && interaction.deferUpdate();
-    const collector = await curPage.createMessageComponentCollector({ filter, time: timeout });
+    let sayfa = 0;
+    
+    // Kuyruk uzunluğu ve süresi için varsayılan değer kontrolü
+    const curPage = await message.channel.send({
+        embeds: [pages[sayfa].setFooter({
+            text: `Sayfa • ${sayfa + 1}/${pages.length} | ${queueLength || '0'} • Şarkılar | ${queueDuration || '00:00'} • Toplam süre`
+        })],
+        components: [butonSatırı],
+        allowedMentions: { repliedUser: false }
+    });
+    
+    if (pages.length === 0) return;
+
+    // Filtre basitleştirildi
+    const filter = (interaction) => interaction.user.id === message.author.id;
+
+    const collector = curPage.createMessageComponentCollector({
+        filter,
+        time: timeout || 60000 // Varsayılan 60 saniye zaman aşımı
+    });
 
     collector.on('collect', async (interaction) => {
-        if (!interaction.deferred) await interaction.deferUpdate();
+        await interaction.deferUpdate(); // Her etkileşimde güncelleme yapılır
+        
         if (interaction.customId === 'back') {
-            page = page > 0 ? --page : pages.length - 1;
+            sayfa = sayfa > 0 ? --sayfa : pages.length - 1;
         } else if (interaction.customId === 'next') {
-            page = page + 1 < pages.length ? ++page : 0;
+            sayfa = sayfa + 1 < pages.length ? ++sayfa : 0;
         }
-        curPage.edit({ embeds: [pages[page].setFooter({ text: `Page • ${page + 1}/${pages.length} | ${queueLength} • Songs | ${queueDuration} • Total duration` })], components: [row] })
+
+        // Embed güncelleniyor
+        curPage.edit({
+            embeds: [pages[sayfa].setFooter({
+                text: `Sayfa • ${sayfa + 1}/${pages.length} | ${queueLength || '0'} • Şarkılar | ${queueDuration || '00:00'} • Toplam süre`
+            })],
+            components: [butonSatırı]
+        });
     });
+
     collector.on('end', () => {
-        const disabled = new MessageActionRow()
-            .addComponents(row1.setDisabled(true), row2.setDisabled(true))
-        curPage.edit({ embeds: [pages[page].setFooter({ text: `Page • ${page + 1}/${pages.length} | ${queueLength} • Songs | ${queueDuration} • Total duration` })], components: [disabled] })
+        // Süre bitince butonlar devre dışı bırakılır
+        const disabledButtons = new MessageActionRow()
+            .addComponents(
+                geriButonu.setDisabled(true),
+                ileriButonu.setDisabled(true)
+            );
+
+        curPage.edit({
+            embeds: [pages[sayfa].setFooter({
+                text: `Sayfa • ${sayfa + 1}/${pages.length} | ${queueLength || '0'} • Şarkılar | ${queueDuration || '00:00'} • Toplam süre`
+            })],
+            components: [disabledButtons]
+        });
     });
+
     return curPage;
 };
